@@ -1,0 +1,7 @@
+[general]
+apiurl = https://api.suse.de
+
+[https://api.suse.de]
+user=<username>
+sshkey=id_rsa
+credentials_mgr_class=osc.credentials.TransientCredentialsManager

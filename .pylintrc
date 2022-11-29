@@ -1,0 +1,5 @@
+[MASTER]
+extension-pkg-whitelist=lxml
+
+[FORMAT]
+max-line-length=120

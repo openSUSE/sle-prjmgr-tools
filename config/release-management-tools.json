@@ -1,0 +1,13 @@
+{
+  "modules": [
+    "update_build_status_page",
+    "incident_repos",
+    "packagelist_report",
+    "search_binary",
+    "list_accepted_pkgs",
+    "jira_epics",
+    "sle_build",
+    "release_to_test",
+    "release_to_publish"
+  ]
+}
