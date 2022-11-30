@@ -455,12 +455,13 @@ def osc_get_sle_12_images(apiurl: str, version: str) -> Dict[str, Build]:
     return result
 
 
-def main(apiurl: str, version: str) -> SleBuildData:
+def main(apiurl: str, version: str, osc_config: Optional[str] = None) -> SleBuildData:
     """
     Main function to get the builds for the specified version.
 
     :param apiurl: URL where the API from the build-service can be reached.
     :param version: The version of the product to check. Should be in format "<codestream>-SP<number>"
+    :param osc_config: The config location for osc to use. If None then the default is retrieved by osc.
     :return: Object with the summarized data.
     """
     # Preparations
@@ -468,7 +469,7 @@ def main(apiurl: str, version: str) -> SleBuildData:
     result.codestream = version.split("-", 1)[0]
 
     # Prepare osc
-    osc_prepare()
+    osc_prepare(osc_config=osc_config, osc_server=apiurl)
 
     # Special cases
     if result.codestream == "15":
@@ -495,7 +496,7 @@ def main_cli(args):
 
     :param args: Argparse Namespace that has all the arguments
     """
-    data = main(args.osc_instance, args.version)
+    data = main(args.osc_instance, args.version, osc_config=args.osc_config)
     if data.codestream == "15":
         print(f"builds from SUSE:SLE-{args.version}:GA:")
         for build, version in data.builds_ga.items():
