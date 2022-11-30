@@ -9,6 +9,7 @@
     "sle_build",
     "release_to",
     "diff_modules",
-    "package_updates_from_xcdchk"
+    "package_updates_from_xcdchk",
+    "ibs_to_jira"
   ]
 }
