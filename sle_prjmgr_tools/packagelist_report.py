@@ -315,7 +315,12 @@ def calculcate_package_diff(old_file: dict, new_file: dict) -> Optional[str]:
     return generate_package_diff_report(added, moved, removed)
 
 
-def main(from_project: str, from_revision_number: str, to_project: str, to_revision_number: str):
+def main(
+    from_project: str,
+    from_revision_number: str,
+    to_project: str,
+    to_revision_number: str,
+):
     """
     Main routine executes the non-CLI related logic.
 

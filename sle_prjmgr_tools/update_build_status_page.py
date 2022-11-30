@@ -284,7 +284,9 @@ def page_url_by_project(project: str):
     return PROJECT_TO_PAGE_MAP[project]["url"]
 
 
-def confluence_get_next_build_section(server: str, user: str, password: str, page_id: int):
+def confluence_get_next_build_section(
+    server: str, user: str, password: str, page_id: int
+):
     """
     Retrieve a section of a specified Confluence page.
 

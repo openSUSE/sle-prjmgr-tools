@@ -54,10 +54,19 @@ def test_osc_get_build_flavors():
     project = "SUSE:SLE-15-SP5:GA"
 
     # Act
-    result = sle_build.osc_get_build_flavors(apiurl, project, "kiwi-templates-Minimal", "_multibuild")
+    result = sle_build.osc_get_build_flavors(
+        apiurl, project, "kiwi-templates-Minimal", "_multibuild"
+    )
 
     # Assert
-    assert result == ['kvm-and-xen', 'kvm', 'VMware', 'MS-HyperV', 'OpenStack-Cloud', 'RaspberryPi']
+    assert result == [
+        "kvm-and-xen",
+        "kvm",
+        "VMware",
+        "MS-HyperV",
+        "OpenStack-Cloud",
+        "RaspberryPi",
+    ]
 
 
 def test_osc_get_non_product_packages():
