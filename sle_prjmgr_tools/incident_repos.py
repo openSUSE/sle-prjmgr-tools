@@ -2,7 +2,7 @@
 This script retrieves all repositories for each incident it is given. The datasource is the SUSE internal SMELT tool.
 """
 
-from typing import List, Set
+from typing import List
 
 import requests
 
