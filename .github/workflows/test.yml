@@ -1,0 +1,21 @@
+name: Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python_pytest:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.6'
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: '**/setup.cfg'
+      - run: pip install .[test]
+      - run: pytest -v --junitxml=report.xml

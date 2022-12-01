@@ -13,7 +13,9 @@ def build_parser(parent_parser):
 
     :return: The subparsers object from argparse.
     """
-    subparser = parent_parser.add_parser("list_accepted_pkgs", help="list_accepted_pkgs help")
+    subparser = parent_parser.add_parser(
+        "list_accepted_pkgs", help="list_accepted_pkgs help"
+    )
     subparser.add_argument("--project", "-p", dest="project", type=str, required=True)
     subparser.add_argument("--days", "-d", dest="time_range", type=int)
     subparser.set_defaults(func=main_cli)

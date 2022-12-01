@@ -145,9 +145,6 @@ class JiraUtils:
         """
         result: List[str] = []
         for issue in self.jira_obj.search_issues(jql, maxResults=max_results):
-            if isinstance(issue, str):
-                # Should never happen since we don't ask for a
-                # dict result but mypy asks correctly for it.
-                continue
-            result.append(issue.key)
+            if isinstance(jira.Issue, str):
+                result.append(issue.key)
         return result

@@ -1,0 +1,44 @@
+name: Linting
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python_pylint:
+    name: pylint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.6'
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: '**/setup.cfg'
+      - run: pip install .[lint]
+      - run: pylint --rcfile=.pylintrc sle_prjmgr_tools
+  python_mypy:
+    name: mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install .[lint]
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8' # We need Python 3.8, so we can install types-lxml
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: '**/setup.cfg'
+      - run: pip install .[lint]
+      - run: pip install types-lxml
+      - run: python -m mypy sle_prjmgr_tools
+  python_black:
+    name: black formatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: "--check --safe --verbose"
+          version: "22.8.0"

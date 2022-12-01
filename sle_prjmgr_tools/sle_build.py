@@ -133,7 +133,9 @@ def osc_get_sle_non_release_packages(apiurl: str, project: str):
     return result
 
 
-def osc_get_build_flavors(apiurl: str, project: str, package: str, filename: str) -> list:
+def osc_get_build_flavors(
+    apiurl: str, project: str, package: str, filename: str
+) -> list:
     """
     Reads the sources of a package to retrieve the allowed build flavors of an image.
 
@@ -194,7 +196,9 @@ def get_kiwi_template(apiurl: str, project: str) -> str:
     return kiwi_template
 
 
-def get_sle_image_jeos_single(apiurl: str, project: str, repo, kiwi_template: str, i) -> List[str]:
+def get_sle_image_jeos_single(
+    apiurl: str, project: str, repo, kiwi_template: str, i
+) -> List[str]:
     """
     Search for JeOS images in a given project, repo and with the specified kiwi template.
 
@@ -246,7 +250,9 @@ def get_sle_images_jeos(apiurl: str, project: str, kiwi_template: str) -> List[s
     return result
 
 
-def get_sle_images_multibuild_single(apiurl: str, project: str, repo, package: str, flavor: str):
+def get_sle_images_multibuild_single(
+    apiurl: str, project: str, repo, package: str, flavor: str
+):
     """
     Retrieve a list of images.
 
