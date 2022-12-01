@@ -131,7 +131,7 @@ def confluence_generate_build_summary(
     user: str,
     password: str,
     project: str,
-    build_id: str,
+    build_id: int,
     build_label: str,
     changelog: str,
 ):
@@ -148,7 +148,7 @@ def confluence_generate_build_summary(
     :return: The generated build summary.
     """
     # pylint: disable=R0913
-    build_str = build_id
+    build_str = str(build_id)
     if build_label:
         build_str = f"{build_id} - {build_label}"
 
@@ -255,7 +255,10 @@ def get_last_build_changelog(project: str):
     # Build id is ignored
     project = get_project(project)
 
-    prj = re.search(r"SLE-(\d+-\w+):\w+", project).groups(0)[0]
+    prj_match = re.search(r"SLE-(\d+-\w+):\w+", project)
+    if prj_match is None:
+        raise ValueError("Could not get project name from given project!")
+    prj = prj_match.groups(0)[0]
     cmd = f"{os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sle-build')} {prj}"
     out = subprocess.check_output(cmd, shell=True)
     # Python3 returns bytes-like obj

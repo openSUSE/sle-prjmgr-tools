@@ -48,7 +48,7 @@ def convert_txt_to_dict(file_content: str) -> Dict[str, List[str]]:
     :param file_content: The string that should be split
     :return: The dictionary with the package names as key and the list of groups they are in as a list.
     """
-    ret = {}
+    ret: Dict[str, List[str]] = {}
     for line in file_content.splitlines():
         pkg, group = line.strip().split(":")
         ret.setdefault(pkg, [])
@@ -64,7 +64,7 @@ def convert_yml_to_dict(file_content: str, unsorted=False) -> Dict[str, List[str
     :param unsorted: If the package should be added to unsorted or not explicitly.
     :return: The dictionary with the package names as key and the list of groups they are in as a list.
     """
-    ret = {}
+    ret: Dict[str, List[str]] = {}
     try:
         parsed_yaml = yaml.safe_load(file_content)
         for module, packages in parsed_yaml.items():
@@ -102,7 +102,7 @@ def get_yml_files(command: str, revision) -> Optional[Dict[str, List[str]]]:
     :param revision: The project revision to get the file from.
     :return: The dictionary with the package names as key and the list of groups they are in as a list.
     """
-    ret = {}
+    ret: Dict[str, List[str]] = {}
     yaml_files = ["reference-summary.yml", "reference-unsorted.yml", "unneeded.yml"]
     for file in yaml_files:
         cmd = command + f" {file}"
@@ -185,7 +185,7 @@ def read_summary_file(file: str) -> Dict[str, List[str]]:
     :param file: The path to the file.
     :return: The dict with the package names as keys and the list of groups as a value.
     """
-    ret = {}
+    ret: Dict[str, List[str]] = {}
     with open(file, "r", encoding="UTF-8") as fp_summary_file:
         for line in fp_summary_file:
             pkg, group = line.strip().split(":")
@@ -285,7 +285,7 @@ def calculcate_package_diff(old_file: dict, new_file: dict) -> Optional[str]:
     if not old_file and not new_file:
         return None
 
-    added = {}
+    added: Dict[str, List[str]] = {}
     for pkg in new_file:
         if pkg in old_file:
             continue
@@ -293,7 +293,7 @@ def calculcate_package_diff(old_file: dict, new_file: dict) -> Optional[str]:
         added.setdefault(addkey, [])
         added[addkey].append(pkg)
 
-    removed = {}
+    removed: Dict[str, List[str]] = {}
     for pkg in old_file:
         old_groups = old_file[pkg]
         if new_file.get(pkg):
@@ -302,7 +302,7 @@ def calculcate_package_diff(old_file: dict, new_file: dict) -> Optional[str]:
         removed.setdefault(removekey, [])
         removed[removekey].append(pkg)
 
-    moved = {}
+    moved: Dict[str, List[str]] = {}
     for pkg in old_file:
         old_groups = old_file[pkg]
         new_groups = new_file.get(pkg)
