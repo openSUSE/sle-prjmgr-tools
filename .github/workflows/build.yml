@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_rpm:
+    name: Build RPM in Docker container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: docker/build.dockerfile
+          push: false
+          load: true
+          tags: sle-prjmgr-tools-builder
+      - name: Build RPM inside Docker image
+        run: docker run --rm -v $PWD:/code sle-prjmgr-tools-builder
+      - name: Store built RPMs
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpms
+          path: rpm-build/*.rpm
+  install_rpm:
+    name: Install previously built RPM
+    needs: build_rpm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: rpms
+          path: rpm-build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: docker/install-check.dockerfile
+          push: false
+          load: true
+          tags: sle-prjmgr-tools-install-check
+      - name: Try installing the RPM in a openSUSE Leap image
+        run: docker run --rm -v $PWD/rpm-build:/rpms sle-prjmgr-tools-install-check
