@@ -9,6 +9,7 @@ RUN [ \
     "python3-jira", \
     "python3-lxml", \
     "python3-importlib_resources", \
+    "python3-keyring", \
     "osc" \
 ]
 

@@ -33,6 +33,7 @@ Requires:       python3-PyYAML
 Requires:       python3-jira
 Requires:       python3-lxml
 Requires:       osc
+Recommends:     python3-keyring
 
 %description
 SUSE SLE release management tools that help publish Service Packs and Snapshots.
