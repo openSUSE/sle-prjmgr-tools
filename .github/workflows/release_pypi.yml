@@ -1,0 +1,35 @@
+name: Publish Python distributions to PyPI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-n-publish:
+    name: Build and publish Python distributions to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: '**/setup.cfg'
+      - name: Install build dependencies
+        run: pip install setuptools
+      - name: Fetch date for version bump
+        run: echo "new_version=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+      - name: Replace version in __init__.py
+        run: sed -i '/__version__ = "[0-9].[0-9].[0-9]/s/.$/.'${{ env.new_version }}'"/g' sle_prjmgr_tools/__init__.py
+      - name: Install Deps with pip
+        run: pip install .
+      - name: Install pypa/build
+        run: python -m pip install build --user
+      - name: Build a binary wheel and a source tarball
+        run: python setup.py sdist bdist_wheel
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          repository_url: https://pypi.org/legacy/

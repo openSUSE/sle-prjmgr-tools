@@ -11,7 +11,7 @@ You may install the tool via either:
 
 - `zypper in sle-prjmgr-tools`
 - `pip install sle-prjmgr-tools`
-- `pip install https://github.com/openSUSE/sle-prjmgr-tools`
+- `pip install git+https://github.com/openSUSE/sle-prjmgr-tools.git`
 - or you install it from the locally built RPMs or via pip.
 
 ## Tool overview

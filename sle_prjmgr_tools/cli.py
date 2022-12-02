@@ -5,18 +5,20 @@ The config file has the following format: { "modules": [ "module1", "module2" ] 
 
 Valid locations for the configuration file are:
 
-- "/etc/release-management-tools.json"
-- "$XDG_CONFIG_HOME/release-management-tools.json"
+- "/etc/sle-prjmgr-tools.json"
+- "$XDG_CONFIG_HOME/sle-prjmgr-tools.json"
 - "$RELEASE_MANAGEMENT_TOOLS_FILE"
 
 A module must have a "build_parser" method that takes a single argument. The method is responsible to assign with
 "set_default" the func kwarg. The CLI entrypoint is called "main_cli" and has a single arguments that is an argparse
 namespace. This should be just a wrapper to the "main" function that has the actual arguments defined.
 
+If no config is supplied the built-in configuration is used.
+
 Example usage of the CLI for development (from git project root):
 
   > . venv/bin/activate
-  > export RELEASE_MANAGEMENT_TOOLS_FILE="config/release-management-tools.json"
+  > export RELEASE_MANAGEMENT_TOOLS_FILE="config/sle-prjmgr-tools.json"
   > python3 -m sle_prjmgr_tools.cli -h
 """
 import argparse
@@ -25,12 +27,13 @@ import json
 import logging
 import os
 import traceback
-
 from typing import List
 
+from importlib_resources import files
+
 CONFIG_LOCATIONS = [
-    "/etc/release-management-tools.json",
-    "$XDG_CONFIG_HOME/release-management-tools.json",
+    "/etc/sle-prjmgr-tools.json",
+    "$XDG_CONFIG_HOME/sle-prjmgr-tools.json",
     "$RELEASE_MANAGEMENT_TOOLS_FILE",
 ]
 PARSER = argparse.ArgumentParser(prog="sle_prjmgr_tools")
@@ -94,6 +97,7 @@ def main():
     The main entrypoint for the library.
     """
     module_list = []
+    config_found = False
     for location in CONFIG_LOCATIONS:
         if "$" in location:
             real_location = os.path.expandvars(location)
@@ -101,8 +105,15 @@ def main():
             real_location = location
         if os.path.isfile(real_location):
             module_list = load_config(real_location)
+            config_found = True
         else:
             logger.debug('"%s" was skipped.', real_location)
+    if not config_found:
+        backup_config_path = str(
+            files("sle_prjmgr_tools.config").joinpath("sle-prjmgr-tools.json")
+        )
+        module_list = load_config(backup_config_path)
+        logger.debug("Built-In Configuration was used!")
     for module in module_list:
         import_plugin(module)
     args = PARSER.parse_args()
