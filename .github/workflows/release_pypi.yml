@@ -17,7 +17,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: '**/setup.cfg'
       - name: Install build dependencies
-        run: pip install setuptools
+        run: pip install setuptools wheel
       - name: Fetch date for version bump
         run: echo "new_version=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
       - name: Replace version in __init__.py
