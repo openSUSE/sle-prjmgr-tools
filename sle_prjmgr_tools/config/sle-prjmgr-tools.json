@@ -7,6 +7,7 @@
     "list_accepted_pkgs",
     "jira_epics",
     "sle_build",
-    "release_to"
+    "release_to",
+    "diff_modules"
   ]
 }
