@@ -53,6 +53,32 @@ class OscUtils:
         result = f"SLES{product_version[1]}-{product_version[2]}"
         return result
 
+    def get_file_from_package(
+        self,
+        project: str,
+        package: str,
+        revision,
+        filename: str,
+        target_filename: Optional[str] = None,
+    ):  # pylint: disable=R0913
+        """
+        Retrieve a given file from a package that is text based.
+
+        :param project: The project the package is in.
+        :param package: The package the file is in.
+        :param revision: The file revision that should be downloaded.
+        :param filename: The filename that should be downloaded.
+        :param target_filename: If this is given, then the file will be downloaded with the specified name.
+        """
+        core.get_source_file(
+            self.osc_server,
+            project,
+            package,
+            filename,
+            targetfilename=target_filename,
+            revision=revision,
+        )
+
     def osc_get_web_ui_url(self) -> str:
         """
         Search the API for the Web UI URL.
