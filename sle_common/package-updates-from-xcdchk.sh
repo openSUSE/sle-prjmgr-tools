@@ -39,6 +39,11 @@ echo "Mentioned bug references: "
 cat ChangeLog-$ORIGIN_VERSION-Full-Test-Build$BUILD1-Build$BUILD2 | while read -r line; do egrep -o '[bsc#|bnc#|boo#][0-9]{7}'; done | uniq | while read -r line; do egrep -o '[0-9]{7}'; done | sort | paste -s -d, -
 
 echo
+echo "Filter for resolved P1/P2 bugs with this build in SLE 15 SP5"
+bugs=$(cat ChangeLog-$ORIGIN_VERSION-Full-Test-Build$BUILD1-Build$BUILD2 | while read -r line; do egrep -o '[bsc#|bnc#|boo#][0-9]{7}'; done | uniq | while read -r line; do egrep -o '[0-9]{7}'; done | sort | sed ':a;N;$!ba;s/\n/%2C/g')
+echo "https://bugzilla.suse.com/buglist.cgi?bug_id=${bugs}&bug_id_type=anyexact&bug_status=RESOLVED&bug_status=VERIFIED&columnlist=short_desc&priority=P1%20-%20Urgent&priority=P2%20-%20High&product=PUBLIC%20SUSE%20Linux%20Enterprise%20Desktop%2015%20SP5&product=PUBLIC%20SUSE%20Linux%20Enterprise%20High%20Availability%20Extension%2015%20SP5&product=PUBLIC%20SUSE%20Linux%20Enterprise%20HPC%2015%20SP5&product=PUBLIC%20SUSE%20Linux%20Enterprise%20Server%2015%20SP5&product=SUSE%20Linux%20Enterprise%20Desktop%2015%20SP5&product=SUSE%20Linux%20Enterprise%20High%20Availability%20Extension%2015%20SP5&product=SUSE%20Linux%20Enterprise%20HPC%2015%20SP5&product=SUSE%20Linux%20Enterprise%20HPC%2015%20SP5%20in%20Public%20Clouds&product=SUSE%20Linux%20Enterprise%20Server%2015%20SP5&product=SUSE%20Linux%20Enterprise%20Server%2015%20SP5%20in%20Public%20Clouds&product=SUSE%20Linux%20Enterprise%20Server%20for%20SAP%2015%20SP5%20in%20Public%20Clouds&product=SUSE%20Linux%20Enterprise%20Server%20for%20SAP%20Applications%2015%20SP5&query_based_on=SLE_15SP5_Resolved_issues&query_format=advanced&resolution=FIXED"
+
+echo
 echo "Mentioned JIRA references: "
 cat ChangeLog-$ORIGIN_VERSION-Full-Test-Build$BUILD1-Build$BUILD2 | egrep -o 'jsc#SLE-[0-9]{5}|jsc#PED-[0-9]{1,5}' | sort | uniq | paste -s -d, -
 
@@ -91,7 +96,7 @@ echo "JIRA query for features ready to transition"
 echo "==========================================="
 echo "Query:"
 echo "------"
-echo "issue in (${PED}) AND status \"IBS Integration\" AND type = Implementation"
+echo "issue in (${PED}) AND status = \"IBS Integration\" AND type = Implementation"
 echo "Comment:"
 echo "--------"
 echo "A submit request referencing this feature has been merged into build${BUILD2}."
