@@ -26,6 +26,7 @@ import importlib
 import json
 import logging
 import os
+import sys
 import traceback
 from typing import List
 
@@ -36,7 +37,9 @@ CONFIG_LOCATIONS = [
     "$XDG_CONFIG_HOME/sle-prjmgr-tools.json",
     "$RELEASE_MANAGEMENT_TOOLS_FILE",
 ]
-PARSER = argparse.ArgumentParser(prog="sle_prjmgr_tools")
+PARSER = argparse.ArgumentParser(
+    prog="sle_prjmgr_tools", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
 PARSER.add_argument(
     "--osc-config",
     dest="osc_config",
@@ -117,7 +120,12 @@ def main():
     for module in module_list:
         import_plugin(module)
     args = PARSER.parse_args()
-    args.func(args)
+    if "func" in vars(args):
+        # Run a subprogramm only if the parser detected it correctly.
+        args.func(args)
+        return
+    PARSER.print_help()
+    sys.exit(1)
 
 
 if __name__ == "__main__":
