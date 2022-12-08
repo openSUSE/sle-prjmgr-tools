@@ -8,6 +8,7 @@
     "jira_epics",
     "sle_build",
     "release_to",
-    "diff_modules"
+    "diff_modules",
+    "package_updates_from_xcdchk"
   ]
 }
