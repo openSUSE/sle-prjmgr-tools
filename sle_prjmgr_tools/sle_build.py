@@ -1,6 +1,7 @@
 """
 This module is responsible to collect the current build numbers of the various images that are built.
 """
+import argparse
 import concurrent.futures
 import re
 from typing import Dict, List, Optional
@@ -49,8 +50,14 @@ def build_parser(parent_parser):
 
     :param parent_parser: The subparsers object from argparse.
     """
-    subparser = parent_parser.add_parser("sle_build", help="sle_build help")
-    subparser.add_argument("version", metavar="V", help="project to get the builds for")
+    subparser = parent_parser.add_parser(
+        "sle_build",
+        help="sle_build help",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    subparser.add_argument(
+        "version", metavar="V", help='Project to get the builds for (e.g. "15-SP5").'
+    )
     subparser.set_defaults(func=main_cli)
 
 
