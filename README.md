@@ -1,3 +1,7 @@
+[![Documentation Status](https://readthedocs.org/projects/sle-prjmgr-tools/badge/?version=latest)](https://sle-prjmgr-tools.readthedocs.io/en/latest/?badge=latest)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+
 # sle-prjmgr-tools
 
 This is a repository containing shared release management tools for SUSE. Tools are expected to be version agnostic,

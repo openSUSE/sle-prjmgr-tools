@@ -42,3 +42,17 @@ jobs:
         with:
           options: "--check --safe --verbose"
           version: "22.8.0"
+  lint_docs:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: pip install -U rstcheck doc8 sphinx
+      - name: Run rstcheck
+        run: rstcheck -r docs
+      - name: Run doc8
+        run: doc8 --ignore D001 docs
