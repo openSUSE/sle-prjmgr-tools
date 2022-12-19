@@ -10,6 +10,7 @@ RUN [ \
     "python3-lxml", \
     "python3-importlib_resources", \
     "python3-keyring", \
+    "python3-rpmfile", \
     "python3-argcomplete", \
     "osc" \
 ]
