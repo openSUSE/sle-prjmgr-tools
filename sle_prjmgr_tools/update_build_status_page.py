@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 from datetime import date, datetime, timedelta
-from typing import Any, Dict
+from typing import Any, Dict, Set, Union
 
 import requests
 
@@ -221,7 +221,7 @@ def get_last_build_number(project, changelog=None):
     """
     # I'm getting build id as the highest number from the changelog
     # sle12 and sle15 both have different syntax
-    versions = set()
+    versions: Set[Union[int, float]] = set()
     if not changelog:
         changelog = get_last_build_changelog(
             project
