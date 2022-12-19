@@ -1,3 +1,4 @@
+# PYTHON_ARGCOMPLETE_OK
 """
 This is the wrapper script that specifies the CLI entry point that can load the scripts from a config file.
 
@@ -21,6 +22,7 @@ Example usage of the CLI for development (from git project root):
   > export RELEASE_MANAGEMENT_TOOLS_FILE="config/sle-prjmgr-tools.json"
   > python3 -m sle_prjmgr_tools.cli -h
 """
+
 import argparse
 import importlib
 import json
@@ -30,6 +32,7 @@ import sys
 import traceback
 from typing import List
 
+import argcomplete  # type: ignore
 from importlib_resources import files
 
 CONFIG_LOCATIONS = [
@@ -119,6 +122,7 @@ def main():
         logger.debug("Built-In Configuration was used!")
     for module in module_list:
         import_plugin(module)
+    argcomplete.autocomplete(PARSER)
     args = PARSER.parse_args()
     if "func" in vars(args):
         # Run a subprogramm only if the parser detected it correctly.
