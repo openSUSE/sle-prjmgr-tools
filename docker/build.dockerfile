@@ -1,7 +1,16 @@
 FROM registry.opensuse.org/opensuse/leap:15.4
 
 RUN ["mkdir", "/code"]
-RUN ["zypper", "in", "-y", "rpm-build", "python-rpm-macros", "python3-devel", "python3-setuptools"]
+RUN [ \
+    "zypper", \
+    "in", \
+    "-y", \
+    "rpm-build", \
+    "python-rpm-macros", \
+    "python3-devel", \
+    "python3-setuptools", \
+    "python3-argcomplete" \
+]
 
 WORKDIR "/code"
 VOLUME ["/code"]

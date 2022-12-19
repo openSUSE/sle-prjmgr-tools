@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: '**/setup.cfg'
       - run: pip install .[lint]
       - run: pip install types-lxml
-      - run: python -m mypy sle_prjmgr_tools
+      - run: python -m mypy --check-untyped-defs sle_prjmgr_tools
   python_black:
     name: black formatter
     runs-on: ubuntu-latest

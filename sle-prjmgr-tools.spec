@@ -1,5 +1,5 @@
 #
-# spec file for package test
+# spec file for package sle-prjmgr-tools
 #
 # Copyright (c) 2022 SUSE LLC
 #
@@ -26,12 +26,14 @@ URL:            https://github.com/openSUSE/sle-prjmgr-tools
 Source:         %{name}-%{version}.tar.gz
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+BuildRequires:  python3-argcomplete
 BuildRequires:  python-rpm-macros
 Requires:       python3-requests
 Requires:       python3-importlib-resources
 Requires:       python3-PyYAML
 Requires:       python3-jira
 Requires:       python3-lxml
+Requires:       python3-argcomplete
 Requires:       osc
 Recommends:     python3-keyring
 

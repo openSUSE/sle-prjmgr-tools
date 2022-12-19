@@ -14,6 +14,49 @@ of the tool itself.
 In case you encounter any issues please open a bug on GitHub:
 `GitHub Issues - openSUSE/sle-prjmgr-tools <https://github.com/openSUSE/sle-prjmgr-tools/issues/new/choose>`_
 
+Shell Completion
+################
+
+Bash
+====
+
+Add the following line to your ``~/.bashrc`` manually please:
+
+.. code-block:: shell
+
+   eval "$(register-python-argcomplete my-awesome-script)"
+
+
+If the file does not exist please create it with:
+
+.. code-block:: shell
+
+   touch ~/.bashrc
+
+
+ZSH
+===
+
+Please execute the following code snippet:
+
+.. code-block:: shell
+
+   autoload -U bashcompinit
+   bashcompinit
+
+
+After you have done this please follow the instructions for Bash.
+
+Fish
+====
+
+Please execute the following commands in a fish terminal:
+
+.. code-block:: shell
+
+   register-python-argcomplete --shell fish my-awesome-script > ~/.config/fish/completions/sle-prjmgr-tools.fish
+
+
 Diff Modules
 ############
 
