@@ -66,7 +66,9 @@ PARSER.add_argument(
     help="The URL for the Confluence instance.",
     default="https://confluence.suse.com",
 )
-SUBPARSERS = PARSER.add_subparsers(help="Help for the actual scripts")
+SUBPARSERS = PARSER.add_subparsers(
+    help="Help for the subprograms that this tool offers."
+)
 logger = logging.getLogger()
 
 
