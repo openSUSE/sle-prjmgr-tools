@@ -42,13 +42,16 @@ def build_parser(parent_parser):
         help="The build numbers that should be compared.",
     )
     subparser.add_argument(
-        "--service-pack", dest="service_pack", default="SLE-15-SP5", help="TODO"
+        "--service-pack",
+        dest="service_pack",
+        default="SLE-15-SP5",
+        help='The service pack in the form of "SLE-15-SPx".',
     )
     subparser.add_argument(
         "--origin-service-pack",
         dest="origin_service_pack",
         default="SLE-15-SP5",
-        help="TODO",
+        help='The service pack in the form of "SLE-15-SPx".',
     )
     subparser.set_defaults(func=main_cli)
 

@@ -30,6 +30,7 @@ import logging
 import os
 import sys
 import traceback
+import urllib.error
 from typing import List
 
 import argcomplete  # type: ignore
@@ -66,7 +67,9 @@ PARSER.add_argument(
     help="The URL for the Confluence instance.",
     default="https://confluence.suse.com",
 )
-SUBPARSERS = PARSER.add_subparsers(help="Help for the actual scripts")
+SUBPARSERS = PARSER.add_subparsers(
+    help="Help for the subprograms that this tool offers."
+)
 logger = logging.getLogger()
 
 
@@ -126,7 +129,15 @@ def main():
     args = PARSER.parse_args()
     if "func" in vars(args):
         # Run a subprogramm only if the parser detected it correctly.
-        args.func(args)
+        try:
+            args.func(args)
+        except urllib.error.URLError as url_error:
+            if "name or service not known" in str(url_error).lower():
+                print(
+                    "No connection to one of the tools. Please make sure the connection to the tools is available"
+                    " before executing the program!"
+                )
+                sys.exit(1)
         return
     PARSER.print_help()
     sys.exit(1)
