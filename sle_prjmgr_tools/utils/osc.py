@@ -1,13 +1,20 @@
 """
 This module should contain helper functionality that assists for the Open Build Service.
 """
+import pathlib
 import re
 import sys
+import tempfile
 import time
+from collections import namedtuple
 from typing import List, Optional
 
+import rpmfile  # type: ignore
 from lxml import etree
 from osc import conf, core  # type: ignore
+
+
+BinaryParsed = namedtuple("BinaryParsed", ("package", "filename", "name", "arch"))
 
 
 class OscUtils:
@@ -94,6 +101,102 @@ class OscUtils:
             raise ValueError("obs_url configuration element expected")
         self.osc_web_ui_url = node.text
         return self.osc_web_ui_url
+
+    def osc_get_binary_names(
+        self, project: str, repository: str, arch: str, package: str
+    ) -> List[BinaryParsed]:
+        """
+        Retrieves the names of all binaries that are built from a given source package.
+
+        :param project: The project the source package is in.
+        :param repository: The repository the binaries are in.
+        :param arch: The architecture that the packages are built for.
+        :param package: The source package name.
+        :return: The list of binary packages parsed and split up in a tuple with four elements.
+        """
+        # Copied from openSUSE-release-tools
+        binary_regex = r"(?:.*::)?(?P<filename>(?P<name>.*)-(?P<version>[^-]+)-(?P<release>[^-]+)\.(?P<arch>[^-\.]+))"
+        rpm_regex = binary_regex + r"\.rpm"
+        parsed = []
+        for binary in core.get_binarylist(
+            self.osc_server, project, repository, arch, package
+        ):
+            result = re.match(rpm_regex, binary)
+            if not result:
+                continue
+
+            name = result.group("name")
+            if name.endswith("-debuginfo") or name.endswith("-debuginfo-32bit"):
+                continue
+            if name.endswith("-debugsource"):
+                continue
+            if result.group("arch") == "src":
+                continue
+
+            parsed.append(
+                BinaryParsed(
+                    package, result.group("filename"), name, result.group("arch")
+                )
+            )
+
+        return parsed
+
+    # pylint: disable-next=too-many-arguments
+    def osc_get_textfile_from_rpm(
+        self, project: str, repo: str, arch: str, binary_name: str, filename: str
+    ) -> str:
+        """
+        Retrieves a textfile from an RPM package.
+
+        :param project: The project the binary is in.
+        :param repo: The repository the binary is in.
+        :param arch: The architecture of the binary that should be retrieved.
+        :param binary_name: The name of the binary.
+        :param filename: The filename inside the binary that should be read.
+        :return: The content of the textfile.
+        """
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            target_filename = pathlib.Path(tmpdirname) / "requested.rpm"
+            # Download binary
+            core.get_binary_file(
+                self.osc_server,
+                project,
+                repo,
+                arch,
+                binary_name,
+                target_filename=str(target_filename),
+            )
+            # Unpack rpm
+            with rpmfile.open(target_filename) as rpm:
+                # Get file
+                with rpm.extractfile(f"./{filename}") as requested_file_fd:
+                    return requested_file_fd.read()
+
+    def osc_retrieve_betaversion(self, project: str) -> str:
+        """
+        Retrieve the current beta version from the "SLES.prod" file in the "sles-release" binary.
+
+        :param project: The project the sles binary is found in.
+        :return: The current beta version. This may be different than the one that is set in the project configuration.
+        """
+        # 000release-packages
+        binaries = self.osc_get_binary_names(
+            project, "standard", "x86_64", "000release-packages:SLES-release"
+        )
+        binary_name = ""
+        for binary in binaries:
+            if binary.name == "sles-release":
+                binary_name = binary.name
+        if not binary_name:
+            raise ValueError("sles-release binary not found!")
+        # Built RPM: /etc/products.d/SLES.prod
+        file = self.osc_get_textfile_from_rpm(
+            project, "standard", "x86_64", binary_name, "etc/products.d/SLES.prod"
+        )
+        root = etree.fromstring(file)
+        # XML --> product.buildconfig.betaversion.text
+        result = root.xpath("/product/buildconfig/betaversion")
+        return result[0].text
 
     def osc_is_repo_published(self, project: str, repository: str) -> bool:
         """
