@@ -50,5 +50,5 @@ jobs:
           push: false
           load: true
           tags: sle-prjmgr-tools-install-check
-      - name: Try installing the RPM in a openSUSE Leap image
+      - name: Try installing the RPM in a openSUSE Tumbleweed image
         run: docker run --rm -v $PWD/rpm-build:/rpms sle-prjmgr-tools-install-check

@@ -1,4 +1,4 @@
-FROM registry.opensuse.org/opensuse/leap:15.4
+FROM registry.opensuse.org/opensuse/tumbleweed:latest
 
 RUN [ \
     "zypper", \
