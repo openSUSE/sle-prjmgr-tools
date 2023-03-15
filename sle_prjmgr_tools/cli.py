@@ -25,22 +25,15 @@ Example usage of the CLI for development (from git project root):
 
 import argparse
 import importlib
-import json
 import logging
-import os
 import sys
-import traceback
 import urllib.error
-from typing import List
 
 import argcomplete  # type: ignore
-from importlib_resources import files
 
-CONFIG_LOCATIONS = [
-    "/etc/sle-prjmgr-tools.json",
-    "$XDG_CONFIG_HOME/sle-prjmgr-tools.json",
-    "$RELEASE_MANAGEMENT_TOOLS_FILE",
-]
+from sle_prjmgr_tools import config
+
+
 PARSER = argparse.ArgumentParser(
     prog="sle_prjmgr_tools", formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
@@ -73,24 +66,6 @@ SUBPARSERS = PARSER.add_subparsers(
 logger = logging.getLogger()
 
 
-def load_config(path: str) -> List[str]:
-    """
-    Loads the JSON config file.
-
-    :param path: This path is excepted to exist. It should be the absolute path to the config file.
-    :return: The list of modules that should be loaded.
-    """
-    with open(path, "rt", encoding="UTF-8") as json_fp:
-        try:
-            json_dict = json.load(json_fp)
-            logger.debug('JSON config loaded from "%s".', path)
-            return json_dict.get("modules")
-        except json.JSONDecodeError:
-            logger.debug("JSON syntax error! Fix syntax to load modules.")
-            traceback.print_exc()
-            return []
-
-
 def import_plugin(name: str):
     """
     This method imports a plugin
@@ -105,24 +80,8 @@ def main():
     """
     The main entrypoint for the library.
     """
-    module_list = []
-    config_found = False
-    for location in CONFIG_LOCATIONS:
-        if "$" in location:
-            real_location = os.path.expandvars(location)
-        else:
-            real_location = location
-        if os.path.isfile(real_location):
-            module_list = load_config(real_location)
-            config_found = True
-        else:
-            logger.debug('"%s" was skipped.', real_location)
-    if not config_found:
-        backup_config_path = str(
-            files("sle_prjmgr_tools.config").joinpath("sle-prjmgr-tools.json")
-        )
-        module_list = load_config(backup_config_path)
-        logger.debug("Built-In Configuration was used!")
+    import_plugin("version")
+    module_list = config.load_modules()
     for module in module_list:
         import_plugin(module)
     argcomplete.autocomplete(PARSER)
