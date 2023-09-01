@@ -38,8 +38,11 @@ def osc_get_submit_requests(project: str):
     :param project: The project that should be checked.
     :return: The list of requests objects that are found with the state accepted and that are submitted.
     """
-    return core.get_review_list(
-        "https://api.suse.de", project=project, states=("accepted"), req_type="submit"
+    return core.get_request_collection(
+        apiurl="https://api.suse.de",
+        project=project,
+        states=("accepted",),
+        types=["submit"],
     )
 
 
@@ -50,8 +53,11 @@ def osc_get_delete_requests(project: str):
     :param project: The project that should be checked.
     :return: The list of requests objects that are found with the state accepted and that are deleting a package.
     """
-    return core.get_review_list(
-        "https://api.suse.de", project=project, states=("accepted"), req_type="delete"
+    return core.get_request_collection(
+        apiurl="https://api.suse.de",
+        project=project,
+        states=("accepted",),
+        types=["delete"],
     )
 
 
@@ -90,14 +96,16 @@ def main_cli(args):
     print("==============================")
     for request in submit_requests:
         print(
-            f"{request.actions[0].src_package} ({request.state.when}) https://api.suse.de/{request.reqid}"
+            f"({request.state.when}) {request.actions[0].src_package} "
+            f"https://build.suse.de/request/show/{request.reqid}"
         )
     print("==============================")
     print("DELETE REQUESTS")
     print("==============================")
     for request in delete_requests:
         print(
-            f"{request.actions[0].src_package} ({request.state.when}) https://api.suse.de/{request.reqid}"
+            f"({request.state.when}) {request.actions[0].tgt_package} "
+            f"https://build.suse.de/request/show/{request.reqid}"
         )
 
 
